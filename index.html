@@ -188,13 +188,15 @@ var EQ_LIST=['Any equipment','Dumbbell','Machine','Bodyweight','Cable'];
 var GATE='Physio-gated: only include this once your physio agrees, and stay in a pain-free range.';
 var PROGRAM={
  LA:{name:'Lower A',focus:'Glutes and knees, plus vertical pull and push',when:'Monday, before work',mins:55,ex:[
-  {id:'hipthrust',g:'Glutes',ss:'A',name:'Dumbbell hip thrust (upper back on bench)',sets:3,reps:[10,12],rest:20,kind:'one',step:2,cue:'Upper back on the bench, one dumbbell across the hips, chin tucked. Drive up, squeeze and pause one second at the top.'},
-  {id:'latpm',g:'Pull',ss:'A',name:'Lat pulldown machine',sets:3,reps:[8,12],rest:75,kind:'machine',step:5,cue:'Chest up, drive the elbows down to your ribs.'},
-  {id:'rdl',g:'Glutes',ss:'B',name:'Dumbbell Romanian deadlift',sets:3,reps:[8,10],rest:20,kind:'db',step:2,cue:'Hips back, soft knees, dumbbells brush your thighs. Stop when the hamstrings are loaded.'},
-  {id:'dbpress',g:'Push',ss:'B',name:'Seated dumbbell shoulder press',sets:3,reps:[8,10],rest:90,kind:'db',step:2,cue:'Ribs down, press slightly forward of your ears.'},
-  {id:'legpress',g:'Knee and quads',name:'Leg press machine (pain-free range)',sets:4,reps:[10,12],rest:90,kind:'machine',step:5,cue:'Feet mid-platform, lower only as far as the knee stays comfortable, drive through the heels. Set a depth stop.',note:'Depth stays where it is now and only increases with your physio\u2019s sign-off.'},
+  {id:'bulg',g:'Knee and quads',ss:'A',name:'Dumbbell Bulgarian split squat',sets:3,reps:[8,10],rest:90,kind:'db',step:2,side:true,cue:'Torso slightly forward, front foot flat, lower until just before pain.',note:'Start at 12 kg in each hand. Stop just before pain.'},
+  {id:'slrdlsup',g:'Glutes',ss:'A',name:'Supported single-leg dumbbell RDL',sets:3,reps:[8,10],rest:75,kind:'one',step:2,side:true,cue:'Hold a wall or rail for balance. Hinge on one leg, long spine, hips square to the floor.',note:'Start at 10 kg. Stop just before pain.'},
+  {id:'hipthrust',g:'Glutes',ss:'B',name:'Dumbbell hip thrust (upper back on bench)',sets:3,reps:[10,12],rest:20,kind:'one',step:2,cue:'Upper back on the bench, one dumbbell across the hips, chin tucked. Drive up, squeeze and pause one second at the top.'},
+  {id:'spidersp',g:'Core and carry',ss:'B',name:'Spiderman side plank',sets:3,reps:[6,8],rest:45,kind:'bw',step:0,side:true,cue:'Side plank on the forearm. Draw the top knee towards the elbow, then extend the leg back. Keep the hips high and the ribs down.',note:'Stop just before pain.'},
+  {id:'heelsq',g:'Knee and quads',ss:'C',name:'Elevated heel dumbbell squat',sets:3,reps:[8,10],rest:90,kind:'one',step:2,cue:'Heels on small plates, dumbbell held at chest, stay upright.',note:'Start at 10 kg. Stop just before pain.'},
   {id:'sideabd',g:'Glutes',ss:'C',name:'Side-lying leg raise (outer hip)',sets:3,reps:[15,20],rest:20,kind:'bw',step:0,side:true,aka:'side-lying hip abduction',cue:'Lie on your side with hips stacked and toes slightly down. Lift the top leg, pause, lower slowly.',note:'Add a light ankle weight or a band once 20 clean reps feels easy.'},
-  {id:'wallsit',g:'Knee and quads',ss:'C',name:'Wall sit hold (back against the wall)',sets:3,reps:[30,45],ru:'s',rest:60,kind:'bw',step:0,cue:'Slide down the wall, weight through the heels, thighs working.',note:'Pick an angle your physio is happy with. Add time before adding depth.'}
+  {id:'boxsl',g:'Knee and quads',ss:'D',name:'Single-leg box squat',sets:3,reps:[6,8],rest:90,kind:'one',step:2,side:true,cue:'Sit back to the box on one leg, then stand back up on two legs.',note:'Start at 10 kg. Stop just before pain.'},
+  {id:'latpm',g:'Pull',ss:'D',name:'Lat pulldown machine',sets:3,reps:[8,12],rest:75,kind:'machine',step:5,cue:'Chest up, drive the elbows down to your ribs.'},
+  {id:'wallsit',g:'Knee and quads',ss:'E',name:'Wall sit hold (back against the wall)',sets:3,reps:[30,45],ru:'s',rest:60,kind:'bw',step:0,cue:'Slide down the wall, weight through the heels, thighs working.',note:'Pick an angle your physio is happy with. Add time before adding depth. Stop just before pain.'},
  ]},
  UA:{name:'Upper A',focus:'Push emphasis, plus a loaded carry',when:'Wednesday, before work',mins:55,ex:[
   {id:'dbbench',g:'Push',ss:'A',name:'Dumbbell bench press (flat bench)',sets:4,reps:[6,10],rest:20,kind:'db',step:2,cue:'Shoulder blades pinched, feet planted, lower under control.'},
@@ -211,7 +213,7 @@ var PROGRAM={
   {id:'slthrust',g:'Glutes',ss:'B',name:'Single-leg dumbbell hip thrust',sets:3,reps:[8,12],rest:20,kind:'one',step:2,side:true,cue:'Hips level, drive through the heel.'},
   {id:'incrow',g:'Pull',ss:'B',name:'Chest-supported dumbbell row (incline bench)',sets:3,reps:[8,12],rest:90,kind:'db',step:2,aka:'incline bench row, prone row',cue:'Lie chest-down on a bench set to about 30 degrees, pull the elbows back and squeeze the shoulder blades. No shrugging.',note:'No incline bench free? Swap in the one-arm dumbbell row.'},
   {id:'stepup',g:'Knee and quads',name:'Low box step-up (15 to 20 cm)',sets:3,reps:[8,10],rest:75,kind:'db',step:2,side:true,cue:'Drive through the whole foot, lower slowly.',note:GATE},
-  {id:'slrdl',g:'Glutes',name:'Single-leg dumbbell Romanian deadlift',sets:3,reps:[8,10],rest:75,kind:'one',step:2,side:true,cue:'Long spine, hips square to the floor. Touch a wall for balance if needed.'},
+  {id:'slrdl',g:'Glutes',name:'Supported single-leg dumbbell RDL',sets:3,reps:[8,10],rest:75,kind:'one',step:2,side:true,cue:'Hold a wall or rail for balance. Hinge on one leg, long spine, hips square to the floor.',note:'Start at 10 kg. Stop just before pain.'},
   {id:'legcurl',g:'Hamstrings',ss:'C',name:'Leg curl machine (seated or lying)',sets:3,reps:[10,12],rest:20,kind:'machine',step:5,cue:'Pause at full flexion, slow return. Strong hamstrings support the knee.'},
   {id:'hammer',g:'Shoulders and arms',ss:'C',name:'Dumbbell hammer curl (palms facing in)',sets:3,reps:[10,12],rest:60,kind:'db',step:1,cue:'Neutral grip, no swinging.'}
  ]},
@@ -269,6 +271,9 @@ var EXTRA=[
  {id:'calfmach',g:'Calves and shins',name:'Calf raise machine (standing or seated)',sets:3,reps:[12,15],rest:60,kind:'machine',step:5,cue:'Full stretch, pause at the top.'}
 ];
 var LEGACY=[
+ {id:'rdl',g:'Glutes',name:'Dumbbell Romanian deadlift',sets:3,reps:[8,10],rest:20,kind:'db',step:2,cue:'Hips back, soft knees, dumbbells brush your thighs. Stop when the hamstrings are loaded.'},
+ {id:'dbpress',g:'Push',name:'Seated dumbbell shoulder press',sets:3,reps:[8,10],rest:90,kind:'db',step:2,cue:'Ribs down, press slightly forward of your ears.'},
+ {id:'legpress',g:'Knee and quads',name:'Leg press machine (pain-free range)',sets:4,reps:[10,12],rest:90,kind:'machine',step:5,cue:'Feet mid-platform, drive through the heels.'},
  {id:'tke',g:'Knee and quads',name:'Cable terminal knee extension (straighten the knee)',sets:3,reps:[12,15],rest:60,kind:'cable',step:2.5,side:true,cue:'Cable behind the knee, slight bend, straighten fully and squeeze the quad.'},
  {id:'abduct',g:'Glutes',name:'Cable hip abduction',sets:3,reps:[12,15],rest:60,kind:'cable',step:2.5,side:true,cue:'Stand tall, move only at the hip, slow on the way back.'},
  {id:'pulldown',g:'Pull',name:'Cable lat pulldown',sets:3,reps:[8,12],rest:90,kind:'cable',step:2.5,cue:'Chest up, drive elbows to your ribs.'},
@@ -362,7 +367,7 @@ function cardioRx(type,wk){
 
 /* ---------- State and persistence ---------- */
 var LS_KEY='strength-log-v2';
-var APP_V=8;
+var APP_V=9;
 function defaultState(){return {v:APP_V,seen:0,cardio:[],cdays:{run:4,swim:2},updatedAt:0,created:today(),startDate:nextMondayKey(),base:{fiveK:'25:00',pushups:11},prog:null,reg:{},sessions:{},checks:{},tests:{}};}
 function merge(b,s){for(var k in s){if(s[k]&&typeof s[k]==='object'&&!Array.isArray(s[k])&&b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k]))merge(b[k],s[k]);else b[k]=s[k];}return b;}
 var state=defaultState();
@@ -445,6 +450,12 @@ function migrate(st){
     if(st.base){delete st.base.weight;delete st.base.waist;}
     if(st.checks)Object.keys(st.checks).forEach(function(k){delete st.checks[k].bw;delete st.checks[k].waist;});
     st.v=8;
+  }
+  if((st.v||1)<9){
+    /* v9: Lower A and Lower B rebuilt around the physio's pairs. History is kept; only the plan changes.
+       Retired exercises stay in the library so past sessions still show their names. updatedAt is not bumped. */
+    if(st.prog){st.prog.LA=clone(PROGRAM.LA);st.prog.LB=clone(PROGRAM.LB);}
+    st.v=9;
   }
   return st;
 }
