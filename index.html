@@ -53,7 +53,7 @@ p{margin:0 0 10px}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
-.top{display:flex;justify-content:space-between;align-items:baseline;padding:calc(18px + env(safe-area-inset-top)) 0 4px}
+.top{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 4px}
 .top h1{font-size:22px}
 .sync{font-size:13px;color:var(--muted)}
 
@@ -88,17 +88,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sg button.on-0{background:var(--muted);color:var(--surface)}
 .sg button.on{background:var(--ink);color:var(--bg)}
 
-.meal{padding:12px 0;border-top:1px solid var(--line)}
-.meal:first-of-type{border-top:0}
-.meal .nm{font-weight:600}
-.meal .id{font-size:14px;color:var(--muted);margin:1px 0 8px}
-.meal .inp{margin-top:8px;min-height:40px}
-.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:6px}
-.bar>i{display:block;height:100%;background:var(--accent)}
 
 .field{display:block;margin:0 0 12px}
 .field>span{display:block;font-size:14px;color:var(--muted);margin-bottom:3px}
-.field input,.field textarea,.field select,.inp{width:100%;min-height:44px;padding:8px 10px;border:1.5px solid var(--line-strong);border-radius:8px;background:var(--surface)}
+.field input,.field textarea,.field select{width:100%;min-height:44px;padding:8px 10px;border:1.5px solid var(--line-strong);border-radius:8px;background:var(--surface)}
 .field textarea{min-height:76px;resize:vertical}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .four{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
@@ -124,8 +117,6 @@ button,input,select,textarea{font:inherit;color:inherit}
 .chip.g{background:var(--warn);color:var(--warn-ink)}
 .chipbtn{border:1.5px solid var(--line-strong);background:transparent;border-radius:99px;padding:6px 12px;min-height:36px;font-size:14px;font-weight:600;cursor:pointer;margin:0 6px 6px 0}
 .chipbtn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.tagx{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);border-radius:99px;padding:3px 4px 3px 12px;margin:0 6px 6px 0;font-size:14px;font-weight:600}
-.tagx button{border:0;background:var(--surface);border-radius:50%;width:24px;height:24px;cursor:pointer;font-weight:700;line-height:1;padding:0}
 .note{border-left:4px solid var(--warn);padding:2px 0 2px 10px;font-size:14px;margin:8px 0}
 
 .sessbar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 4px}
@@ -301,14 +292,6 @@ var AKA={rdl:'RDL, stiff-leg hinge',hipthrust:'glute bridge on a bench',hyper:'h
 LIB.forEach(function(e){if(AKA[e.id]&&!e.aka)e.aka=AKA[e.id];});
 var CABLE_SWAP={tke:'legpress',abduct:'abductor',pulldown:'latpm',pushdown:'dbtri',pullthru:'hyper',kickback:'legcurl',cabrow:'machrow',facepull:'reardelt',ohtri:'skull'};
 
-var MEALS=[
- {id:'b',name:'Breakfast',g:35,idea:'3 eggs on toast, or Greek yogurt, oats and banana'},
- {id:'m',name:'Mid-morning',g:20,idea:'Skyr or a whey shake with fruit'},
- {id:'l',name:'Lunch',g:40,idea:'Salmon or prawns, salad and a carb'},
- {id:'a',name:'Mid-afternoon',g:20,idea:'Greek yogurt and nuts, or 2 boiled eggs'},
- {id:'d',name:'Dinner',g:40,idea:'Prepped salmon pasta or Thai prawn curry'}
-];
-var FOODS=[{n:'Salmon fillet',g:35},{n:'Prawns, medium portion',g:30},{n:'3 eggs',g:18},{n:'Greek yogurt, 200 g',g:20},{n:'Skyr pot',g:18},{n:'Whey scoop',g:25},{n:'Cod fillet',g:30},{n:'Tofu, 150 g',g:20},{n:'Sardines, tin',g:22},{n:'Cottage cheese, 150 g',g:17},{n:'Lentils, 1 cup cooked',g:18},{n:'Milk, 300 ml',g:10}];
 var TEST_WEEKS=[6,12,18,26];
 
 /* ---------- Helpers ---------- */
@@ -350,7 +333,6 @@ function setsFor(ex,idx,w){
   return Math.min(n,Math.max(5,ex.sets));
 }
 function plannedOrNext(k){for(var i=0;i<7;i++){var s=DOW[parseKey(addDays(k,i)).getDay()];if(s)return s;}return 'LA';}
-function slotG(m){return Math.round(m.g*state.targets.protein/155);}
 function kindLabel(ex){return ex.kind==='bw'?'':KIND[ex.kind];}
 function parseDur(v){
   v=String(v==null?'':v).trim();if(!v)return null;
@@ -380,7 +362,8 @@ function cardioRx(type,wk){
 
 /* ---------- State and persistence ---------- */
 var LS_KEY='strength-log-v2';
-function defaultState(){return {v:7,lastBackup:'',cardio:[],cdays:{run:4,swim:2},updatedAt:0,created:today(),startDate:nextMondayKey(),targets:{protein:155,water:3,goal:81},base:{weight:76,waist:'',fiveK:'25:00',pushups:11},prog:null,reg:{},days:{},sessions:{},checks:{},tests:{}};}
+var APP_V=8;
+function defaultState(){return {v:APP_V,seen:0,cardio:[],cdays:{run:4,swim:2},updatedAt:0,created:today(),startDate:nextMondayKey(),base:{fiveK:'25:00',pushups:11},prog:null,reg:{},sessions:{},checks:{},tests:{}};}
 function merge(b,s){for(var k in s){if(s[k]&&typeof s[k]==='object'&&!Array.isArray(s[k])&&b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k]))merge(b[k],s[k]);else b[k]=s[k];}return b;}
 var state=defaultState();
 function migrate(st){
@@ -455,9 +438,17 @@ function migrate(st){
     }
     st.v=7;st.updatedAt=Date.now();
   }
+  if((st.v||1)<8){
+    /* v8: bodyweight, waist, food, water and the daily log are removed and their stored data deleted.
+       updatedAt is deliberately NOT bumped, so a stale device cannot overwrite newer account data. */
+    delete st.days;delete st.targets;
+    if(st.base){delete st.base.weight;delete st.base.waist;}
+    if(st.checks)Object.keys(st.checks).forEach(function(k){delete st.checks[k].bw;delete st.checks[k].waist;});
+    st.v=8;
+  }
   return st;
 }
-try{var raw=localStorage.getItem(LS_KEY);if(raw)state=merge(defaultState(),JSON.parse(raw));}catch(e){}
+try{var raw=localStorage.getItem(LS_KEY);if(raw){var parsed=JSON.parse(raw);state=merge(defaultState(),parsed);state.v=parsed.v||1;if(parsed.seen==null)state.seen=parsed.v||0;}}catch(e){}
 state=migrate(state);
 try{localStorage.setItem(LS_KEY,JSON.stringify(state));}catch(e){}
 var saveWarned=false;
@@ -471,36 +462,6 @@ function touch(){
     setSync('Not saved');
     if(!saveWarned){saveWarned=true;toast('This browser blocked saving. Save a backup file and check your storage settings.');}
   }
-}
-function hasData(){return Object.keys(state.sessions).length>0||Object.keys(state.days).length>0||(state.cardio||[]).length>0||Object.keys(state.checks).length>0||Object.keys(state.tests).length>0;}
-function importBackup(txt){
-  var obj;try{obj=JSON.parse(txt);}catch(e){toast('That file is not a valid backup');return;}
-  if(obj&&obj.data&&obj.data.sessions&&!obj.sessions)obj=obj.data;
-  if(!obj||typeof obj!=='object'||!obj.sessions||typeof obj.sessions!=='object'){toast('That file does not look like a Strength log backup');return;}
-  if(hasData()&&!window.confirm('Replace the data on this device with the backup?'))return;
-  try{localStorage.setItem(LS_KEY+'-before-import',JSON.stringify(state));}catch(e){}
-  state=migrate(merge(defaultState(),obj));
-  touch();render();toast('Backup restored');
-}
-var APP_VERSION='1.0.0',deferredInstall=null;
-window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredInstall=e;if(view==='plan')render();});
-function isStandalone(){return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;}
-function installPanel(){
-  var h='<h2>Install and offline</h2><div class="panel">';
-  if(isStandalone())h+='<p style="margin:0"><span class="chip up">Installed</span> The app opens without a connection and keeps your data on this device.</p>';
-  else{
-    h+='<p>Install it so it opens from your home screen and works without signal.</p>';
-    if(deferredInstall)h+='<button class="btn primary block" data-action="install">Install app</button>';
-    else h+='<ul class="plain small" style="margin:0"><li><b>iPhone or iPad:</b> open this page in Safari, tap Share, then Add to Home Screen.</li><li><b>Android:</b> in Chrome, open the menu and tap Install app.</li><li><b>Desktop:</b> use the install icon in the address bar.</li></ul>';
-  }
-  h+='<p class="small muted" style="margin:10px 0 0">Version '+APP_VERSION+'. Your data stays on this device. Save a backup file weekly, and use it to move to a new phone.</p></div>';
-  return h;
-}
-function backupBanner(){
-  if(!hasData())return '';
-  var last=state.lastBackup,age=last?Math.round((parseKey(today())-parseKey(last))/864e5):999;
-  if(age<7)return '';
-  return '<div class="panel flag" style="border-left-color:var(--warn);margin-top:14px"><b>Back up your data.</b> <span class="small">'+(last?'Your last backup was '+age+' days ago.':'You have not saved a backup yet.')+' Your log lives on this device only.</span><div style="margin-top:8px"><button class="btn small" data-action="backup">Save backup file</button></div></div>';
 }
 
 /* ---------- Session logic ---------- */
@@ -573,28 +534,12 @@ function focusDone(mon){
 }
 
 /* ---------- Week stats and coach signals ---------- */
-function proteinOf(d){
-  var t=0;(d.m||[]).forEach(function(v,i){if(v===2)t+=slotG(MEALS[i]);else if(v===1)t+=slotG(MEALS[i])/2;});
-  (d.x||[]).forEach(function(x){t+=(+x.g||0);});
-  return Math.round(t);
-}
 function weekStats(mon){
-  var st={sessions:0,protein:0,logged:0,waterDays:0,sleep:[],knee:[],missed:[]};
-  var totalP=0;
+  var st={sessions:0,missed:[]};
   for(var i=0;i<7;i++){
     var k=addDays(mon,i),sid=DOW[parseKey(k).getDay()],s=state.sessions[k];
     if(hasDone(s))st.sessions++;else if(sid&&k<today())st.missed.push(prog(sid).name);
-    var d=state.days[k];
-    if(d){
-      var any=(d.m||[]).some(function(v){return v!==0;})||(d.x||[]).length>0;
-      if(any){st.logged++;totalP+=proteinOf(d);}
-      if((+d.w||0)>=state.targets.water)st.waterDays++;
-      if(d.s!==''&&d.s!=null&&!isNaN(+d.s))st.sleep.push(+d.s);
-      if(d.k!==''&&d.k!=null&&!isNaN(+d.k))st.knee.push(+d.k);
-    }
   }
-  st.protein=st.logged?Math.round(totalP/st.logged):0;
-  st.pct=st.logged?Math.round(100*st.protein/state.targets.protein):0;
   return st;
 }
 function avg(a){return a.length?round1(a.reduce(function(x,y){return x+y;},0)/a.length):null;}
@@ -607,32 +552,15 @@ function cardioStats(mon){
   });
   o.runKm=round1(o.runKm);return o;
 }
-function weightSeries(){
-  var pts=[];
-  if(state.base.weight)pts.push({k:state.created,y:+state.base.weight});
-  Object.keys(state.checks).sort().forEach(function(k){var c=state.checks[k];if(c.bw!==''&&c.bw!=null)pts.push({k:k,y:+c.bw});});
-  return pts;
-}
 function signals(mon){
   var out=[],st=weekStats(mon),c=state.checks[mon]||{};
-  var ws=weightSeries().filter(function(p){return p.k<=addDays(mon,6);});
-  if(ws.length>=2){
-    var a=ws[ws.length-2],b=ws[ws.length-1];
-    var wks=Math.max(1,(parseKey(b.k)-parseKey(a.k))/(7*864e5));
-    var rate=(b.y-a.y)/wks;
-    var span=(parseKey(b.k)-parseKey(ws[0].k))/(7*864e5);
-    if(span>=2&&rate<0.1)out.push('Weight is flat or falling ('+round1(rate)+' kg per week). Add one carb portion at dinner and a banana with the afternoon snack, then re-check in two weeks.');
-    else if(rate>0.5)out.push('Gaining faster than planned ('+round1(rate)+' kg per week). Remove the afternoon carb add-on and keep protein where it is.');
-    else if(span>=1)out.push('Weight trend is on target ('+round1(rate)+' kg per week). No food changes needed.');
-  }
   if(st.sessions<3)out.push('Only '+st.sessions+' of 4 sessions logged. Name the slot that failed and give it a fixed time next week.');
   var fd=focusDone(mon);
   if(st.sessions>=3&&fd.Glutes<12)out.push('Only '+fd.Glutes+' glute sets this week. Add a glute finisher to an upper day, such as frog pumps or side-lying abduction.');
-  var sl=(c.sleep!==''&&c.sleep!=null)?+c.sleep:avg(st.sleep);
+  var sl=(c.sleep!==''&&c.sleep!=null)?+c.sleep:null;
   if(sl!=null&&sl<6.5)out.push('Sleep averages '+sl+' h. Recovery is your limiter: move lights-out 30 minutes earlier before adding any training.');
-  var kn=(c.knee!==''&&c.knee!=null)?+c.knee:avg(st.knee);
+  var kn=(c.knee!==''&&c.knee!=null)?+c.knee:null;
   if(kn!=null&&kn>=4)out.push('Knee pain averages '+kn+'/10. Hold depth and load on lower days and raise it with your physio before progressing.');
-  if(st.logged>=3&&st.pct<75)out.push('Protein is at '+st.pct+'% of target. The two snacks are the usual gap, so prep them on Sunday.');
   var cs=cardioStats(mon);
   if(weekNum(mon)>=1&&mon<mondayKey(today())&&cs.all===0)out.push('No run or swim logged. Two easy sessions a week is the target, and swimming counts.');
   var rk=avg(cs.runKnee);
@@ -641,16 +569,12 @@ function signals(mon){
 }
 function summaryText(mon){
   var c=state.checks[mon]||{},wk=weekNum(mon),st=weekStats(mon),ph=phaseOf(wk);
-  var ws=weightSeries().filter(function(p){return p.k<mon;});
-  var last=ws.length?ws[ws.length-1].y:null;
   var L=[];
   L.push('Week '+wk+' of 26 ('+ph.name+(isDeload(wk)?', deload':'')+') check-in, '+fmtShort(mon)+' to '+fmtShort(addDays(mon,6)));
-  L.push('Weight: '+(c.bw!==''&&c.bw!=null?c.bw+' kg':'not logged')+(last?' (previous '+last+' kg)':'')+'. Waist: '+(c.waist?c.waist+' cm':'not logged'));
   L.push('Sessions: '+st.sessions+' of 4'+(st.missed.length?' (missed: '+st.missed.join(', ')+')':''));
   var fd=focusDone(mon);
   L.push('Sets done: glutes '+fd.Glutes+', knee and quads '+fd['Knee and quads']+', hamstrings '+fd.Hamstrings+', push '+fd.Push+', pull '+fd.Pull);
-  L.push('Protein estimate: '+(st.logged?st.protein+' g average, '+st.pct+'% of target, '+st.logged+' days logged':'no days logged')+'. Water target hit on '+st.waterDays+' days');
-  var sl=(c.sleep!==''&&c.sleep!=null)?c.sleep:avg(st.sleep),kn=(c.knee!==''&&c.knee!=null)?c.knee:avg(st.knee);
+  var sl=(c.sleep!==''&&c.sleep!=null)?c.sleep:null,kn=(c.knee!==''&&c.knee!=null)?c.knee:null;
   L.push('Sleep average: '+(sl!=null?sl+' h':'n/a')+'. Energy: '+(c.energy?c.energy+'/5':'n/a')+'. Knee pain average: '+(kn!=null?kn+'/10':'n/a'));
   var cs=cardioStats(mon),rkn=avg(cs.runKnee);
   L.push('Cardio: '+cs.runs+' runs ('+cs.runKm+' km'+(cs.runKm>0&&cs.runSec>0?', average pace '+fmtTime(cs.runSec/cs.runKm)+'/km':'')+'), '+cs.swims+' swims ('+Math.round(cs.swimM)+' m)'+(rkn!=null?'. Knee after runs: '+rkn+'/10':''));
@@ -690,28 +614,21 @@ function chart(pts,o){
   if(pts.length>1)s+='<text x="'+(W-pr)+'" y="'+(H-5)+'" text-anchor="end" font-size="10" style="fill:var(--muted)">'+fmtShort(dkey(new Date(t1)))+'</text>';
   return s+'</svg>';
 }
-function barChart(vals,target,label){
-  var W=320,H=120,pl=30,pr=6,pt=8,pb=20,n=vals.length;
-  var mx=Math.max(target,Math.max.apply(null,vals.map(function(v){return v.y;})))*1.1||1;
-  var bw=(W-pl-pr)/n;
-  function Y(v){return pt+(1-v/mx)*(H-pt-pb);}
-  var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="'+esc(label)+'">';
-  vals.forEach(function(v,i){
-    var x=pl+i*bw+2,h=(H-pb)-Y(v.y);
-    s+='<rect x="'+x.toFixed(1)+'" y="'+Y(v.y).toFixed(1)+'" width="'+(bw-4).toFixed(1)+'" height="'+Math.max(0,h).toFixed(1)+'" rx="2" style="fill:'+(v.y>=target*0.9?'var(--ok)':(v.y>0?'var(--accent)':'var(--line)')) +'"/>';
-  });
-  s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(target).toFixed(1)+'" y2="'+Y(target).toFixed(1)+'" stroke-dasharray="4 4" style="stroke:var(--warn)" stroke-width="1.5"/>';
-  s+='<text x="'+(pl-4)+'" y="'+(Y(target)+3).toFixed(1)+'" text-anchor="end" font-size="10" style="fill:var(--warn)">'+target+'</text>';
-  s+='<text x="'+pl+'" y="'+(H-5)+'" font-size="10" style="fill:var(--muted)">'+fmtShort(vals[0].k)+'</text><text x="'+(W-pr)+'" y="'+(H-5)+'" text-anchor="end" font-size="10" style="fill:var(--muted)">'+fmtShort(vals[n-1].k)+'</text>';
-  return s+'</svg>';
+/* ---------- What's new ---------- */
+var CHANGES=[
+ {v:8,date:'30 Sep 2026',items:['Removed bodyweight and waist tracking: check-in fields, charts, baseline and goal settings, and the weight signals.','Removed the food log, protein extras, water and the daily sleep and knee log from Today.','Sleep and knee pain are now entered once a week in the check-in. Knee after runs is still logged with each run.','The Progress weekly table now shows lifts alongside runs and swims.','Previously logged weight, food and daily-log data has been deleted.']}
+];
+function whatsNew(){
+  if((state.seen||0)>=APP_V)return '';
+  var c=CHANGES[0];
+  return '<div class="panel flag" style="margin-top:14px"><div class="row"><h3 style="margin:0">What\u2019s new in v'+c.v+'</h3><button class="btn small" data-action="wn-close">Got it</button></div><ul class="plain small">'+c.items.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><p class="small muted" style="margin:0">Full history is under Plan.</p></div>';
 }
 
 /* ---------- Views ---------- */
 function viewToday(){
   var t=today(),wk=weekNum(t),ph=phaseOf(wk),dl=isDeload(wk);
-  var d=state.days[t]||{},m=d.m||[0,0,0,0,0],tx=d.t||[],xs=d.x||[];
   var sid=DOW[new Date().getDay()],mon=mondayKey(t);
-  var h=backupBanner()+'<section class="hero"><div class="big num">'+(wk>0?wk:'0')+'</div><div><div class="ht">'+(wk>0?'Week '+wk+' of 26':'Starts '+esc(fmtDay(mondayKey(state.startDate))))+'</div><div class="hp">'+ph.name+(dl?', deload week':'')+'</div></div></section>';
+  var h=whatsNew()+'<section class="hero"><div class="big num">'+(wk>0?wk:'0')+'</div><div><div class="ht">'+(wk>0?'Week '+wk+' of 26':'Starts '+esc(fmtDay(mondayKey(state.startDate))))+'</div><div class="hp">'+ph.name+(dl?', deload week':'')+'</div></div></section>';
   h+='<div class="strip" aria-label="26 week programme">';
   for(var i=1;i<=26;i++)h+='<i class="wkbar'+(i<wk?' past':'')+(i===wk?' now':'')+(isDeload(i)?' dl':'')+(TEST_WEEKS.indexOf(i)>-1?' test':'')+'" title="Week '+i+(isDeload(i)?', deload':'')+(TEST_WEEKS.indexOf(i)>-1?', retest':'')+'"></i>';
   h+='</div><p class="muted small">Short bars are deload weeks. Dots mark benchmark retests.</p>';
@@ -724,7 +641,7 @@ function viewToday(){
     h+='<div class="panel flag"><div class="row"><div><h3>'+esc(P.name)+', '+esc(P.focus)+'</h3><div class="muted small">About '+P.mins+' minutes, '+P.ex.length+' exercises</div></div>'+(done?'<span class="chip up">Logged</span>':'')+'</div>';
     h+='<div style="margin-top:12px"><button class="btn primary block" data-action="open" data-sid="'+sid+'">'+(done?'Review session':'Start session')+'</button></div></div>';
   }else{
-    h+='<div class="panel"><h3>'+(cardioOn(t).length?'No lifting today':'Rest day')+'</h3><p class="muted" style="margin:0 0 10px">Do the 5-minute knee and glute primer, hit your meals, and get to bed on time. Next lifting session: '+esc(prog(plannedOrNext(addDays(t,1))).name)+'.</p><div class="two"><button class="btn" data-action="open" data-sid="'+plannedOrNext(addDays(t,1))+'">Log a lift anyway</button><button class="btn" data-action="cardio-open" data-type="'+(cardioOn(t)[0]||'run')+'">Log a run or swim</button></div></div>';
+    h+='<div class="panel"><h3>'+(cardioOn(t).length?'No lifting today':'Rest day')+'</h3><p class="muted" style="margin:0 0 10px">Do the 5-minute knee and glute primer and get to bed on time. Next lifting session: '+esc(prog(plannedOrNext(addDays(t,1))).name)+'.</p><div class="two"><button class="btn" data-action="open" data-sid="'+plannedOrNext(addDays(t,1))+'">Log a lift anyway</button><button class="btn" data-action="cardio-open" data-type="'+(cardioOn(t)[0]||'run')+'">Log a run or swim</button></div></div>';
   }
   cardioOn(t).forEach(function(ct){
     var rx=cardioRx(ct,wk),cdone=(state.cardio||[]).some(function(x){return x.date===t&&x.type===ct;});
@@ -739,25 +656,6 @@ function viewToday(){
   var fd=focusDone(mon),fp=focusPlan();
   h+='</div><p class="small muted" style="margin-top:8px">Circles are lifting, squares are run or swim. Sets this week: glutes '+fd.Glutes+' of '+fp.Glutes+', knee and quads '+fd['Knee and quads']+' of '+fp['Knee and quads']+'.</p>';
 
-  var p=proteinOf(d);
-  h+='<h2>Food today</h2><div class="panel"><div class="row"><b class="num" style="font-size:24px">'+p+' g</b><span class="muted">estimate of '+state.targets.protein+' g protein</span></div><div class="bar"><i style="width:'+Math.min(100,Math.round(100*p/state.targets.protein))+'%"></i></div><div style="margin-top:8px">';
-  MEALS.forEach(function(ml,i){
-    h+='<div class="meal"><div class="nm">'+ml.name+' <span class="muted small">'+slotG(ml)+' g</span></div><div class="id">'+esc(ml.idea)+'</div><div class="sg" role="group" aria-label="'+ml.name+'">'+
-      [[2,'Full'],[1,'Light'],[-1,'Skipped']].map(function(o){var on=m[i]===o[0];return '<button data-action="meal" data-i="'+i+'" data-v="'+o[0]+'" class="'+(on?(o[0]===-1?'on-0':'on-'+o[0]):'')+'" aria-pressed="'+on+'">'+o[1]+'</button>';}).join('')+'</div>'+
-      '<input class="inp" data-day-t="'+i+'" placeholder="What did you eat? (optional)" value="'+esc(tx[i]||'')+'" aria-label="Notes for '+ml.name+'"></div>';
-  });
-  h+='</div></div>';
-  h+='<div class="panel"><h3>Add extras</h3><p class="small muted">Anything beyond the five slots, such as a whey shake or an extra portion of fish. Tap to add its protein.</p>';
-  if(xs.length)h+='<div>'+xs.map(function(x,i){return '<span class="tagx">'+esc(x.n)+' '+esc(x.g)+' g <button data-action="xrm" data-i="'+i+'" aria-label="Remove '+esc(x.n)+'">x</button></span>';}).join('')+'</div>';
-  h+='<div>'+FOODS.map(function(f,i){return '<button class="chipbtn" data-action="xadd" data-i="'+i+'">+ '+esc(f.n)+' ('+f.g+' g)</button>';}).join('')+'</div>';
-  h+='<div class="two" style="margin-top:8px"><label class="field" style="margin:0"><span>Custom food</span><input id="xn" placeholder="Protein bar"></label><label class="field" style="margin:0"><span>Protein (g)</span><input id="xg" inputmode="numeric" placeholder="20"></label></div><button class="btn small" style="margin-top:10px" data-action="xcustom">Add custom food</button></div>';
-
-  var w=+d.w||0;
-  h+='<h2>Daily log</h2><div class="panel stack"><div class="row"><div><b>Water</b><div class="muted small">Target '+state.targets.water+' L</div></div><div class="row"><button class="btn small" data-action="water" data-d="-0.5" aria-label="Less water">-0.5</button><b class="num" style="font-size:24px;min-width:64px;text-align:center">'+round1(w)+' L</b><button class="btn small" data-action="water" data-d="0.5" aria-label="More water">+0.5</button></div></div>';
-  h+='<label class="field" style="margin:0"><span>Sleep last night (hours)</span><input data-day="s" type="text" inputmode="decimal" value="'+esc(d.s==null?'':d.s)+'" placeholder="7.5"></label>';
-  h+='<div><div class="muted small" style="margin-bottom:4px">Left knee today, 0 is none, 10 is severe</div><div class="knee">';
-  for(var q=0;q<=10;q++)h+='<button data-action="knee" data-v="'+q+'" class="'+(d.k===q?(q>=4?'hot':'on'):'')+'" aria-pressed="'+(d.k===q)+'">'+q+'</button>';
-  h+='</div></div></div>';
   h+='<div class="panel"><h3>5-minute primer, daily</h3><p class="small muted" style="margin:0">Glute bridge 2 x 12, side-lying leg raise 2 x 12 each side, calf raise 2 x 15. Confirm this list with your physio and swap in their exercises where they differ.</p></div>';
   return h;
 }
@@ -863,11 +761,7 @@ function testVals(field){
 function viewProgress(){
   var wk=weekNum(today()),h='';
   if(TEST_WEEKS.indexOf(wk)>-1&&!Object.keys(state.tests).some(function(k){return weekNum(k)===wk;}))h+='<div class="panel flag" style="margin-top:14px"><b>Retest due this week.</b> Log your benchmarks below.</div>';
-  var ws=weightSeries().map(function(p){return {t:parseKey(p.k).getTime(),y:p.y};});
-  h+='<h2>Body weight</h2><div class="panel">'+chart(ws,{goal:+state.targets.goal||null,label:'Body weight in kilograms'})+'<p class="small muted" style="margin:6px 0 0">Aim for 0.2 to 0.35 kg gain per week, judged on the two-week trend.</p></div>';
-  var wa=Object.keys(state.checks).sort().filter(function(k){return state.checks[k].waist;}).map(function(k){return {t:parseKey(k).getTime(),y:+state.checks[k].waist};});
-  h+='<h2>Waist</h2><div class="panel">'+chart(wa,{label:'Waist in centimetres'})+'</div>';
-
+  h+='<div style="height:14px"></div>';
   var ids={},opts=[];
   SIDS.forEach(function(s){prog(s).ex.forEach(function(e){ids[e.id]=1;});});
   Object.keys(state.sessions).forEach(function(k){Object.keys(state.sessions[k].sets||{}).forEach(function(id){ids[id]=1;});});
@@ -887,32 +781,16 @@ function viewProgress(){
     h+='</div>';
   }
 
-  var pv=[];for(var q=13;q>=0;q--){var kk=addDays(today(),-q);pv.push({k:kk,y:state.days[kk]?proteinOf(state.days[kk]):0});}
-  h+='<h2>Protein, last 14 days</h2><div class="panel">'+barChart(pv,state.targets.protein,'Estimated protein per day')+'<p class="small muted" style="margin:6px 0 0">Green bars are within 10% of target.</p></div>';
-
-  h+='<h2>Last 8 weeks</h2><div class="panel scroll"><table><tr><th>Week</th><th>Sessions</th><th>Protein</th><th>Water</th><th>Sleep</th><th>Knee</th></tr>';
-  var cur=mondayKey(today());
-  for(var i=0;i<8;i++){
-    var mk=addDays(cur,-7*i),st=weekStats(mk),n=weekNum(mk);
-    var boxes='';for(var b=0;b<4;b++)boxes+='<span class="dot'+(b<st.sessions?' f':'')+'" style="margin-right:3px"></span>';
-    h+='<tr><td>'+(n>0?'W'+n:fmtShort(mk))+'</td><td>'+boxes+'</td><td>'+(st.logged?st.pct+'%':'n/a')+'</td><td>'+st.waterDays+'/7</td><td>'+(avg(st.sleep)!=null?avg(st.sleep)+' h':'n/a')+'</td><td>'+(avg(st.knee)!=null?avg(st.knee):'n/a')+'</td></tr>';
-  }
-  h+='</table></div>';
-
   var cd=(state.cardio||[]).slice().sort(function(a,b){return a.date<b.date?-1:1;});
   var rp=cd.filter(function(x){return x.type==='run'&&+x.dist>=1&&+x.sec>0;}).map(function(x){return {t:parseKey(x.date).getTime(),y:x.sec/x.dist};});
   var sp=cd.filter(function(x){return x.type==='swim'&&+x.dist>0;}).map(function(x){return {t:parseKey(x.date).getTime(),y:+x.dist};});
   h+='<h2>Running and swimming</h2><div class="panel"><h3>Run pace per km</h3>'+chart(rp,{fmt:fmtTime,label:'Run pace per kilometre'})+'<p class="small muted" style="margin:6px 0 0">Lower is faster. Easy runs and time trials both appear here.</p><h3 style="margin-top:16px">Swim distance per session, metres</h3>'+chart(sp,{label:'Swim distance in metres'})+'</div>';
-  h+='<div class="panel scroll"><table><tr><th>Week</th><th>Runs</th><th>Run km</th><th>Swims</th><th>Swim m</th><th>Knee after runs</th></tr>';
-  for(var ci=0;ci<8;ci++){var cmk=addDays(mondayKey(today()),-7*ci),cst=cardioStats(cmk),cn=weekNum(cmk);h+='<tr><td>'+(cn>0?'W'+cn:fmtShort(cmk))+'</td><td>'+cst.runs+'</td><td>'+cst.runKm+'</td><td>'+cst.swims+'</td><td>'+Math.round(cst.swimM)+'</td><td>'+(avg(cst.runKnee)!=null?avg(cst.runKnee):'n/a')+'</td></tr>';}
+  h+='<div class="panel scroll"><table><tr><th>Week</th><th>Lifts</th><th>Runs</th><th>Run km</th><th>Swims</th><th>Swim m</th><th>Knee after runs</th></tr>';
+  for(var ci=0;ci<8;ci++){var cmk=addDays(mondayKey(today()),-7*ci),cst=cardioStats(cmk),cn=weekNum(cmk),lst=weekStats(cmk);h+='<tr><td>'+(cn>0?'W'+cn:fmtShort(cmk))+'</td><td>'+lst.sessions+'/4</td><td>'+cst.runs+'</td><td>'+cst.runKm+'</td><td>'+cst.swims+'</td><td>'+Math.round(cst.swimM)+'</td><td>'+(avg(cst.runKnee)!=null?avg(cst.runKnee):'n/a')+'</td></tr>';}
   h+='</table></div>';
-  var wsr=weightSeries(),lastW=wsr.length?wsr[wsr.length-1].y:null;
-  var lastWaistKey=Object.keys(state.checks).sort().filter(function(k){return state.checks[k].waist;}).pop();
   var t5=testVals('fiveK'),tp=testVals('pushups'),tw=testVals('wall'),tb=testVals('bridge');
   var b5=parseTime(state.base.fiveK),l5=t5.last?parseTime(t5.last):null;
   h+='<h2>Benchmarks</h2><div class="panel scroll"><table><tr><th></th><th>Baseline</th><th>Latest</th><th>Change</th></tr>';
-  h+='<tr><td>Weight</td><td>'+esc(state.base.weight)+' kg</td><td>'+(lastW!=null?lastW+' kg':'n/a')+'</td><td>'+(lastW!=null&&state.base.weight?(lastW-state.base.weight>0?'+':'')+round1(lastW-state.base.weight)+' kg':'')+'</td></tr>';
-  h+='<tr><td>Waist</td><td>'+(state.base.waist?esc(state.base.waist)+' cm':'not set')+'</td><td>'+(lastWaistKey?state.checks[lastWaistKey].waist+' cm':'n/a')+'</td><td>'+(lastWaistKey&&state.base.waist?round1(state.checks[lastWaistKey].waist-state.base.waist)+' cm':'')+'</td></tr>';
   h+='<tr><td>5 km</td><td>'+esc(state.base.fiveK)+'</td><td>'+(t5.last?esc(t5.last):'n/a')+'</td><td>'+(b5&&l5?(l5-b5>0?'+':'-')+fmtTime(Math.abs(l5-b5)):'')+'</td></tr>';
   h+='<tr><td>Max push-ups</td><td>'+esc(state.base.pushups)+'</td><td>'+(tp.last?esc(tp.last):'n/a')+'</td><td>'+(tp.last?(tp.last-state.base.pushups>0?'+':'')+(tp.last-state.base.pushups):'')+'</td></tr>';
   h+='<tr><td>Wall sit hold</td><td>'+(tw.first!=null?tw.first+' s':'first test')+'</td><td>'+(tw.last!=null?tw.last+' s':'n/a')+'</td><td>'+(tw.first!=null&&tw.last!=null?(tw.last-tw.first>0?'+':'')+(tw.last-tw.first)+' s':'')+'</td></tr>';
@@ -926,16 +804,13 @@ function viewProgress(){
 }
 
 function viewCheckin(){
-  var mon=ciWeek,c=state.checks[mon]||{},wk=weekNum(mon),st=weekStats(mon),sg=signals(mon);
+  var mon=ciWeek,c=state.checks[mon]||{},wk=weekNum(mon),st=weekStats(mon),sg=signals(mon),ccs=cardioStats(mon);
   var h='<div class="row" style="margin-top:14px"><button class="btn small" data-action="ciprev">Previous</button><div style="text-align:center"><h2 style="margin:0">'+(wk>0?'Week '+wk:'Pre-start')+'</h2><div class="muted small">'+fmtShort(mon)+' to '+fmtShort(addDays(mon,6))+'</div></div><button class="btn small" data-action="cinext">Next</button></div>';
-  h+='<div class="panel" style="margin-top:14px"><div class="two"><div><div class="num" style="font-size:34px;font-weight:700">'+st.sessions+' of 4</div><div class="muted small">sessions logged</div></div><div><div class="num" style="font-size:34px;font-weight:700">'+(st.logged?st.pct+'%':'n/a')+'</div><div class="muted small">protein target, '+st.logged+' days logged</div></div></div></div>';
-  var ccs=cardioStats(mon);
-  h+='<p class="small muted" style="margin:0 0 4px">Cardio this week: '+ccs.runs+' runs ('+ccs.runKm+' km) and '+ccs.swims+' swims ('+Math.round(ccs.swimM)+' m).</p>';
-  h+='<div class="panel"><div class="two"><label class="field"><span>Body weight (kg), fasted, morning</span><input data-ci="bw" inputmode="decimal" value="'+esc(c.bw==null?'':c.bw)+'"></label><label class="field"><span>Waist at navel (cm)</span><input data-ci="waist" inputmode="decimal" value="'+esc(c.waist==null?'':c.waist)+'"></label></div>';
-  h+='<div class="two"><label class="field"><span>Average sleep (h)</span><input data-ci="sleep" inputmode="decimal" value="'+esc(c.sleep==null?'':c.sleep)+'" placeholder="'+(avg(st.sleep)==null?'':avg(st.sleep))+'"></label><label class="field"><span>Average knee pain (0-10)</span><input data-ci="knee" inputmode="decimal" value="'+esc(c.knee==null?'':c.knee)+'" placeholder="'+(avg(st.knee)==null?'':avg(st.knee))+'"></label></div>';
+  h+='<div class="panel" style="margin-top:14px"><div class="two"><div><div class="num" style="font-size:34px;font-weight:700">'+st.sessions+' of 4</div><div class="muted small">sessions logged</div></div><div><div class="num" style="font-size:34px;font-weight:700">'+(ccs.runs+ccs.swims)+' of 2</div><div class="muted small">runs and swims, '+ccs.runKm+' km and '+Math.round(ccs.swimM)+' m</div></div></div></div>';
+  h+='<div class="panel"><div class="two"><label class="field"><span>Average sleep (h)</span><input data-ci="sleep" inputmode="decimal" value="'+esc(c.sleep==null?'':c.sleep)+'" placeholder="7.5"></label><label class="field"><span>Average knee pain (0-10)</span><input data-ci="knee" inputmode="decimal" value="'+esc(c.knee==null?'':c.knee)+'" placeholder="2"></label></div>';
   h+='<div class="muted small" style="margin-bottom:4px">Energy across the week</div><div class="sg" role="group" aria-label="Energy" style="margin-bottom:14px">'+[1,2,3,4,5].map(function(n){return '<button data-action="energy" data-v="'+n+'" class="'+(+c.energy===n?'on':'')+'" style="min-width:48px">'+n+'</button>';}).join('')+'</div>';
   h+='<label class="field"><span>Biggest win</span><textarea data-ci="win">'+esc(c.win||'')+'</textarea></label><label class="field"><span>What got in the way</span><textarea data-ci="snag">'+esc(c.snag||'')+'</textarea></label><label class="field" style="margin:0"><span>Question for your coach</span><textarea data-ci="ask">'+esc(c.ask||'')+'</textarea></label></div>';
-  h+='<h2>Signals</h2><div class="panel">'+(sg.length?'<ul class="plain">'+sg.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':'<p class="muted" style="margin:0">Log a weight and a few days of food to see signals.</p>')+'</div>';
+  h+='<h2>Signals</h2><div class="panel">'+(sg.length?'<ul class="plain">'+sg.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':'<p class="muted" style="margin:0">Nothing flagged this week.</p>')+'</div>';
   h+='<h2>Send to your coach</h2><p class="muted small">Copy this and paste it into the coaching chat. The plan gets adjusted from it.</p><textarea id="sumTxt" class="mono" readonly>'+esc(summaryText(mon))+'</textarea><div class="two" style="margin-top:10px"><button class="btn primary" data-action="copy">Copy summary</button><button class="btn" data-action="backup">Save backup file</button></div>';
   return h;
 }
@@ -957,17 +832,17 @@ function viewPlan(){
   h+='<h2>Equipment</h2><div class="panel"><p style="margin:0">The plan uses dumbbells, a bench, bodyweight and five machines: leg press, leg curl, lat pulldown, chest press and shoulder press. Cable exercises are still in the library under the Cable filter for when a station is free, and your earlier cable history is kept. Machine weights are in kg on the stack, so use the smallest pin step your machine allows when you progress.</p></div>';
   h+='<h2>How the week blends</h2><div class="panel"><ul class="plain"><li><b>Mon, Lower A.</b> Glutes and knees, plus a lat pulldown and shoulder press paired in between.</li><li><b>Wed, Upper A.</b> Bench press and rows, a shoulder press machine, side raises and triceps, finished with a farmer carry.</li><li><b>Sat, Lower B.</b> Glutes and single-leg strength, plus a chest press, a chest-supported dumbbell row and hammer curls.</li><li><b>Sun, Upper B.</b> Incline press, underhand lat pulldowns, rear delts, arms, calves and the push-up test.</li><li><b>Pairs.</b> Exercises that share a pair letter alternate set for set, so the upper work fits inside each lower session without much extra time. The Tuesday swim adds back and shoulder conditioning.</li></ul><p class="small muted" style="margin:6px 0 0">This is the default plan. Sessions you have customised keep your version. Use Restore default under Edit exercises to get this blend for a session.</p></div>';
   h+='<h2>Planned sets per week</h2><div class="panel scroll"><table><tr><th>Group</th><th>Sets</th></tr>'+GROUPS.map(function(g){return '<tr><td>'+g+'</td><td>'+fp[g]+'</td></tr>';}).join('')+'</table><p class="small muted" style="margin:10px 0 0">Aim for 15 to 20 glute sets, 10 to 12 knee and quad sets, and 12 to 18 sets each for push and pull. This updates as you edit the plan.</p></div>';
-  h+='<h2>Glute and knee focus</h2><div class="panel"><ul class="plain"><li><b>Glutes get the most volume.</b> Hip thrusts, hinges, sumo deadlifts, side-lying leg raises and single-leg work appear on both lower days.</li><li><b>Knee strength is built without deep bend.</b> Leg press to a set depth stop and wall sits train the quads in a pain-free range, and the leg curl builds hamstring support. The goblet box squat is in the library if you want it back. Step-ups and other loaded knee work are physio-gated.</li><li><b>Progress in this order:</b> time under tension, then reps, then load, then depth. Depth only moves with your physio\u2019s approval.</li><li><b>Tempo.</b> 3 seconds down on knee exercises, 1 second pause at the top of glute exercises.</li><li>Keep the knee scale on the Today tab honest. It drives the signals on the Check-in tab.</li></ul></div>';
+  h+='<h2>Glute and knee focus</h2><div class="panel"><ul class="plain"><li><b>Glutes get the most volume.</b> Hip thrusts, hinges, sumo deadlifts, side-lying leg raises and single-leg work appear on both lower days.</li><li><b>Knee strength is built without deep bend.</b> Leg press to a set depth stop and wall sits train the quads in a pain-free range, and the leg curl builds hamstring support. The goblet box squat is in the library if you want it back. Step-ups and other loaded knee work are physio-gated.</li><li><b>Progress in this order:</b> time under tension, then reps, then load, then depth. Depth only moves with your physio\u2019s approval.</li><li><b>Tempo.</b> 3 seconds down on knee exercises, 1 second pause at the top of glute exercises.</li><li>Log a knee score after every run and in the weekly check-in, and keep it honest. It drives the signals on the Check-in tab.</li></ul></div>';
   h+='<h2>Running and swimming</h2><div class="panel"><ul class="plain"><li><b>Two easy sessions a week.</b> One run and one swim, at conversation pace. This builds your aerobic base without eating into muscle gain.</li><li><b>Running builds gradually.</b> Weeks 1 to 5 are 25 easy minutes, then 30 minutes from week 7 and 35 from week 19. Time trials replace the easy run in retest weeks (6, 12, 18, 26).</li><li><b>Swim by freestyle or pull buoy.</b> Avoid the breaststroke kick unless your physio is happy with it. Swimming is your low-impact swap whenever the knee is sore.</li><li><b>Knee rule for runs.</b> Above 3 out of 10 during a run, stop and walk. If the knee scores 4 or more after two runs in a row, swap runs for swims and tell your physio.</li><li><b>Fuel it.</b> Add a banana or one extra carb portion on run and swim days. It costs roughly 250 to 350 kcal a session, which is small against your surplus.</li><li><b>Recovery.</b> Avoid running the day before a lower-body session if the legs feel heavy. Move the run day in Settings if needed.</li></ul></div>';
   h+='<h2>Phases</h2><div class="panel"><ul class="plain"><li><b>Foundation, weeks 1 to 6.</b> 3 reps in reserve, technique, pain-free knee range, glute activation. Deload and retest in week 6.</li><li><b>Build, weeks 7 to 18.</b> 1 to 2 reps in reserve. The first two exercises of each session gain a set. Deloads and retests in weeks 12 and 18.</li><li><b>Strength, weeks 19 to 26.</b> Main lifts move to 6 to 8 reps. Deload in week 24, final retest in week 26.</li></ul></div>';
   h+='<h2>Progression rules</h2><div class="panel"><ul class="plain"><li><b>Double progression.</b> When every set reaches the top of the rep range with clean form, the app flags "Add weight today" next session.</li><li>Miss the bottom of the range two sessions in a row: drop the weight 10% and rebuild.</li><li><b>Knee traffic light.</b> 0 to 3 out of 10 during training and settled by the next morning: carry on. 4 or more, swelling, or catching: stop that movement and tell your physio. Confirm these limits with them.</li></ul></div>';
-  h+='<h2>Fuel</h2><div class="panel"><p><b>Targets, without counting calories.</b> About 155 g protein a day, spread over five eating moments, and a small surplus of roughly 300 kcal above maintenance. Aim for 0.2 to 0.35 kg gain a week.</p><ul class="plain"><li><b>Plate rule at lunch and dinner.</b> Two palms of fish, eggs or tofu, two fists of carbs (rice, pasta, potato, bread), one to two fists of vegetables, one thumb of oil or nuts.</li><li><b>Weight flat for two weeks:</b> add one fist of carbs at dinner and a banana in the afternoon. <b>Above 0.5 kg a week:</b> remove the afternoon carb.</li><li><b>Breakfast, fixed and fast.</b> Eggs on toast, or Greek yogurt with oats and banana, or bran flakes with milk plus a Greek yogurt. Training mornings: banana and coffee before, breakfast within 90 minutes after.</li><li><b>Fix the hunger dips.</b> Mid-morning and mid-afternoon each get a protein snack: skyr or Greek yogurt, a whey shake, two boiled eggs, hummus with oatcakes, sardines on crackers.</li><li><b>Lunch.</b> Salmon and salad plus a carb. Rotate prawns, eggs or tofu two days a week for variety.</li><li><b>Dinner, 8:30 to 9 pm.</b> Keep the two current preps and add two more: miso salmon with rice and greens, and prawn and egg fried rice or baked cod with lentils.</li><li><b>Prep.</b> Sunday 45 minutes: dinners, boiled eggs, overnight oats, snack boxes. Wednesday 30 minutes: top up dinners and snacks.</li><li><b>Optional supplements.</b> Whey isolate for gaps, creatine monohydrate 3 to 5 g daily. Check with your doctor if you have any health conditions.</li></ul></div>';
-  h+=installPanel();
-  h+='<h2>Settings</h2><div class="panel"><div class="two"><label class="field"><span>Programme start date</span><input type="date" data-set="startDate" value="'+esc(state.startDate)+'"></label><label class="field"><span>Goal weight (kg)</span><input data-set="goal" inputmode="decimal" value="'+esc(state.targets.goal)+'"></label></div><div class="two"><label class="field"><span>Protein target (g)</span><input data-set="protein" inputmode="numeric" value="'+esc(state.targets.protein)+'"></label><label class="field"><span>Water target (L)</span><input data-set="water" inputmode="decimal" value="'+esc(state.targets.water)+'"></label></div>';
-  h+='<div class="two"><label class="field"><span>Baseline weight (kg)</span><input data-set="bweight" inputmode="decimal" value="'+esc(state.base.weight)+'"></label><label class="field"><span>Baseline waist (cm)</span><input data-set="bwaist" inputmode="decimal" value="'+esc(state.base.waist)+'"></label></div><div class="two"><label class="field"><span>Baseline 5 km</span><input data-set="b5" value="'+esc(state.base.fiveK)+'"></label><label class="field"><span>Baseline max push-ups</span><input data-set="bpu" inputmode="numeric" value="'+esc(state.base.pushups)+'"></label></div>';
+  h+='<h2>Fuel</h2><div class="panel"><p><b>Targets, without counting calories.</b> About 155 g protein a day, spread over five eating moments, and a small surplus of roughly 300 kcal above maintenance. Aim for 0.2 to 0.35 kg gain a week.</p><ul class="plain"><li><b>Plate rule at lunch and dinner.</b> Two palms of fish, eggs or tofu, two fists of carbs (rice, pasta, potato, bread), one to two fists of vegetables, one thumb of oil or nuts.</li><li><b>Weight flat for two weeks:</b> add one fist of carbs at dinner and a banana in the afternoon. <b>Above 0.5 kg a week:</b> remove the afternoon carb.</li><li><b>Breakfast, fixed and fast.</b> Eggs on toast, or Greek yogurt with oats and banana, or bran flakes with milk plus a Greek yogurt. Training mornings: banana and coffee before, breakfast within 90 minutes after.</li><li><b>Fix the hunger dips.</b> Mid-morning and mid-afternoon each get a two-minute item you can eat while working: a milk and pea protein shake, a Greek yogurt or skyr pot, two boiled eggs, hummus with oatcakes, sardines on crackers. Block 10 minutes in your calendar at 10:30 and 16:00, and set alarms.</li><li><b>Lunch.</b> Salmon and salad plus a carb. Rotate prawns, eggs or tofu two days a week for variety.</li><li><b>Dinner, 8:30 to 9 pm.</b> Keep the two current preps and add two more: miso salmon with rice and greens, and prawn and egg fried rice or baked cod with lentils.</li><li><b>Prep.</b> Sunday 45 minutes: dinners, boiled eggs, overnight oats, snack boxes. Wednesday 30 minutes: top up dinners and snacks.</li><li><b>Optional supplements.</b> No whey. A pea protein powder, one scoop a day at mid-morning, is a convenience only, because food alone can hit your protein. Creatine monohydrate 3 to 5 g daily. Check with your doctor if you have any health conditions.</li></ul></div>';
+  h+='<h2>Settings</h2><div class="panel"><div class="two"><label class="field"><span>Programme start date</span><input type="date" data-set="startDate" value="'+esc(state.startDate)+'"></label><div></div></div>';
+  h+='<div class="two"><label class="field"><span>Baseline 5 km</span><input data-set="b5" value="'+esc(state.base.fiveK)+'"></label><label class="field"><span>Baseline max push-ups</span><input data-set="bpu" inputmode="numeric" value="'+esc(state.base.pushups)+'"></label></div>';
   var dsel=function(key,cur){return '<select data-set="'+key+'">'+[['-1','Off'],['1','Monday'],['2','Tuesday'],['3','Wednesday'],['4','Thursday'],['5','Friday'],['6','Saturday'],['0','Sunday']].map(function(o){return '<option value="'+o[0]+'"'+(String(cur)===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')+'</select>';};
   h+='<div class="two"><label class="field"><span>Run day</span>'+dsel('runday',state.cdays.run)+'</label><label class="field"><span>Swim day</span>'+dsel('swimday',state.cdays.swim)+'</label></div>';
-  h+='<h3 style="margin-top:6px">Export your data</h3><div class="two"><button class="btn" data-action="csvw">Workouts CSV</button><button class="btn" data-action="csvf">Food and daily log CSV</button></div><div class="two" style="margin-top:10px"><button class="btn" data-action="csvcd">Run and swim CSV</button><button class="btn" data-action="backup">Full backup file</button></div><label class="field" style="margin-top:14px"><span>Restore from a backup file (.json)</span><input id="impfile" type="file" accept=".json,application/json"></label><div style="margin-top:10px"><button class="btn block" data-action="reset" style="border-color:var(--bad);color:var(--bad)">Erase all data</button></div></div>';
+  h+='<h3 style="margin-top:6px">Export your data</h3><div class="two"><button class="btn" data-action="csvw">Workouts CSV</button><button class="btn" data-action="csvcd">Run and swim CSV</button></div><div style="margin-top:10px"><button class="btn block" data-action="backup">Full backup file</button></div><div style="margin-top:10px"><button class="btn block" data-action="reset" style="border-color:var(--bad);color:var(--bad)">Erase all data</button></div></div>';
+  h+='<h2>Version history</h2><div class="panel">'+CHANGES.map(function(c){return '<p style="margin:0 0 10px"><b>v'+c.v+', '+esc(c.date)+'.</b></p><ul class="plain small">'+c.items.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>';}).join('')+'</div>';
   return h;
 }
 
@@ -1019,18 +894,6 @@ function workoutsCsv(){
   });
   return rows.map(function(r){return r.map(csvc).join(',');}).join('\n');
 }
-function foodCsv(){
-  var rows=[['date','protein_estimate_g','breakfast','breakfast_note','mid_morning','mid_morning_note','lunch','lunch_note','mid_afternoon','mid_afternoon_note','dinner','dinner_note','extras','water_l','sleep_h','knee_0_10']];
-  var lab={'2':'full','1':'light','-1':'skipped','0':''};
-  Object.keys(state.days).sort().forEach(function(k){
-    var d=state.days[k],r=[k,proteinOf(d)];
-    for(var i=0;i<5;i++){r.push(lab[String((d.m||[])[i]||0)]);r.push((d.t||[])[i]||'');}
-    r.push((d.x||[]).map(function(x){return x.n+' '+x.g+'g';}).join('; '));r.push(d.w||'');r.push(d.s==null?'':d.s);r.push(d.k==null?'':d.k);
-    rows.push(r);
-  });
-  return rows.map(function(r){return r.map(csvc).join(',');}).join('\n');
-}
-
 function cardioCsv(){
   var rows=[['date','activity','time_mm_ss','distance','distance_unit','pace','effort','knee_0_10','note']];
   (state.cardio||[]).slice().sort(function(a,b){return a.date<b.date?-1:1;}).forEach(function(x){
@@ -1044,11 +907,6 @@ function cardioCsv(){
 
 /* ---------- Events ---------- */
 function confirmTwice(key){if(armedKey===key){armedKey=null;return true;}armedKey=key;toast('Tap again to confirm');setTimeout(function(){if(armedKey===key)armedKey=null;},3000);return false;}
-function dayObj(k){
-  if(!state.days[k])state.days[k]={m:[0,0,0,0,0],t:['','','','',''],x:[],w:0,s:'',k:null};
-  var d=state.days[k];if(!d.m)d.m=[0,0,0,0,0];if(!d.t)d.t=['','','','',''];if(!d.x)d.x=[];
-  return d;
-}
 function ciObj(){if(!state.checks[ciWeek])state.checks[ciWeek]={};return state.checks[ciWeek];}
 function tmplIndex(sid,id){var a=prog(sid).ex;for(var i=0;i<a.length;i++)if(a[i].id===id)return i;return -1;}
 
@@ -1056,16 +914,7 @@ document.addEventListener('click',function(e){
   var nb=e.target.closest('[data-view]');if(nb){go(nb.dataset.view);return;}
   var el=e.target.closest('[data-action]');if(!el)return;
   var a=el.dataset.action,t=today(),sid,ix,arr;
-  if(a==='meal'){var d=dayObj(t),i=+el.dataset.i,v=+el.dataset.v;d.m[i]=d.m[i]===v?0:v;touch();render();}
-  else if(a==='xadd'){var f=FOODS[+el.dataset.i];dayObj(t).x.push({n:f.n,g:f.g});touch();render();}
-  else if(a==='xrm'){dayObj(t).x.splice(+el.dataset.i,1);touch();render();}
-  else if(a==='xcustom'){
-    var n=$('#xn').value.trim(),g=num($('#xg').value);
-    if(!n||g===''){toast('Enter a name and protein grams');return;}
-    dayObj(t).x.push({n:n,g:g});touch();render();
-  }
-  else if(a==='water'){var d2=dayObj(t);d2.w=Math.max(0,round1((+d2.w||0)+(+el.dataset.d)));touch();render();}
-  else if(a==='knee'){var d3=dayObj(t),q=+el.dataset.v;d3.k=d3.k===q?null:q;touch();render();}
+  if(a==='wn-close'){state.seen=APP_V;touch();render();}
   else if(a==='open'){trainDate=t;trainSid=el.dataset.sid;trainMode='strength';go('train');}
   else if(a==='tmode'){trainMode=el.dataset.m;if(trainMode==='cardio'&&!cdraft.time&&!cdraft.dist){cdraft.type=cardioOn(trainDate)[0]||cdraft.type;}render();}
   else if(a==='cardio-open'){trainDate=t;trainMode='cardio';cdraft={type:el.dataset.type||'run',time:'',dist:'',rpe:'',knee:null,note:''};go('train');}
@@ -1155,13 +1004,11 @@ document.addEventListener('click',function(e){
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(function(){toast('Summary copied');},function(){toast(ok?'Summary copied':'Select the text and copy it');});}
     else toast(ok?'Summary copied':'Select the text and copy it');
   }
-  else if(a==='backup'){saveFile('strength-log-backup-'+t+'.json',JSON.stringify(state,null,2)).then(function(ok){if(ok){state.lastBackup=t;touch();render();}});}
-  else if(a==='install'){if(deferredInstall){deferredInstall.prompt();deferredInstall.userChoice.then(function(){deferredInstall=null;render();});}}
+  else if(a==='backup'){saveFile('strength-log-backup-'+t+'.json',JSON.stringify(state,null,2));}
   else if(a==='csvw'){saveFile('workouts-'+t+'.csv',workoutsCsv());}
-  else if(a==='csvf'){saveFile('food-and-daily-log-'+t+'.csv',foodCsv());}
   else if(a==='reset'){
     if(!confirmTwice('reset'))return;
-    state=defaultState();touch();stopRest();editMode=false;render();toast('All data erased');
+    state=defaultState();state.seen=APP_V;touch();stopRest();editMode=false;render();toast('All data erased');
   }
 });
 
@@ -1171,9 +1018,7 @@ document.addEventListener('input',function(e){
     var f=el.dataset.f;
     if(f==='note'){var sn=ensureSession(trainDate,effSid());sn.note=el.value;touch();return;}
     var s=ensureSession(trainDate,effSid()),ar=s.sets[el.dataset.ex],st=ar&&ar[+el.dataset.i];if(!st)return;st[f]=num(el.value);touch();
-  }else if(el.dataset.dayT!==undefined){var dd=dayObj(today());dd.t[+el.dataset.dayT]=el.value;touch();}
-  else if(el.dataset.day){var d=dayObj(today());d[el.dataset.day]=el.value===''?'':num(el.value);touch();}
-  else if(el.dataset.cd){cdraft[el.dataset.cd]=el.value;}
+  }else if(el.dataset.cd){cdraft[el.dataset.cd]=el.value;}
   else if(el.dataset.ci){
     var c=ciObj(),k=el.dataset.ci;
     c[k]=(k==='win'||k==='snag'||k==='ask')?el.value:(el.value===''?'':num(el.value));
@@ -1182,7 +1027,6 @@ document.addEventListener('input',function(e){
 });
 document.addEventListener('change',function(e){
   var el=e.target;
-  if(el.id==='impfile'){var fl=el.files&&el.files[0];if(!fl)return;fl.text().then(function(txt){importBackup(txt);},function(){toast('Could not read that file');});return;}
   if(el.id==='pex'){progEx=el.value;render();}
   else if(el.id==='tdate'){trainDate=el.value||today();trainSid=null;render();}
   else if(el.dataset.pe){
@@ -1197,11 +1041,6 @@ document.addEventListener('change',function(e){
   else if(el.dataset.set){
     var kk=el.dataset.set,vv=el.value;
     if(kk==='startDate'&&vv)state.startDate=vv;
-    else if(kk==='goal')state.targets.goal=num(vv);
-    else if(kk==='protein')state.targets.protein=num(vv)||155;
-    else if(kk==='water')state.targets.water=num(vv)||3;
-    else if(kk==='bweight')state.base.weight=num(vv);
-    else if(kk==='bwaist')state.base.waist=num(vv);
     else if(kk==='b5')state.base.fiveK=vv.trim();
     else if(kk==='bpu')state.base.pushups=num(vv);
     else if(kk==='runday'){state.cdays.run=+vv;}

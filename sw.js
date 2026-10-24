@@ -1,5 +1,5 @@
 /* Strength log service worker. Bump VERSION whenever you redeploy new files. */
-const VERSION='strength-log-1.0.0';
+const VERSION='strength-log-1.0.1';
 const FONTS='strength-log-fonts';
 const CORE=['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png','./icons/apple-touch-icon.png'];
 
